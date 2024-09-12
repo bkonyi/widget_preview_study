@@ -20,6 +20,20 @@ FutureOr<T> runInDirectoryScope<T>({
   return result;
 }
 
+ProcessResult checkExitCode({
+  required String description,
+  required String failureMessage,
+  required ProcessResult result,
+}) {
+  if (result.exitCode != 0) {
+    logger.severe('$description failed with exit code: ${result.exitCode}');
+    logger.severe('STDOUT:\n${result.stdout}');
+    logger.severe('\STDERR:\n${result.stderr}');
+    throw StateError(failureMessage);
+  }
+  return result;
+}
+
 abstract class PlatformUtils {
   static String get prebuiltApplicationBinaryPath {
     assert(Platform.isLinux || Platform.isMacOS || Platform.isWindows);

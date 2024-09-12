@@ -10,6 +10,7 @@ import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
 import 'constants.dart';
+import 'utils.dart';
 
 final logger = Logger.root;
 
@@ -127,14 +128,10 @@ class PubspecProcessor {
       '$projectName:{"path":"${projectRoot.path}"}',
     ];
 
-    final result = await Process.run('flutter', args);
-    if (result.exitCode != 0) {
-      logger.severe('Failed to add dependencies to pubspec.yaml');
-      logger.severe('STDOUT: ${result.stdout}');
-      logger.severe('STDERR: ${result.stderr}');
-
-      // TODO(bkonyi): throw a better error.
-      throw StateError('Failed to add dependencies to pubspec.yaml');
-    }
+    checkExitCode(
+      description: 'Adding pub dependencies',
+      failureMessage: 'Failed to add dependencies to pubspec.yaml!',
+      result: await Process.run('flutter', args),
+    );
   }
 }

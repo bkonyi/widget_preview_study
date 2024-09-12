@@ -64,13 +64,17 @@ class WidgetPreviewEnvironment {
       return;
     }
 
-    // TODO(bkonyi): check exit code.
     logger.info('Creating $previewScaffoldProjectPath...');
-    await Process.run('flutter', [
-      'create',
-      '--platforms=windows,linux,macos',
-      '.dart_tool/preview_scaffold',
-    ]);
+    checkExitCode(
+      description: 'Creating $previewScaffoldProjectPath',
+      failureMessage:
+          'Failed to create preview scaffold at $previewScaffoldProjectPath',
+      result: await Process.run('flutter', [
+        'create',
+        '--platforms=windows,linux,macos',
+        '.dart_tool/preview_scaffold',
+      ]),
+    );
 
     if (!(await Directory(previewScaffoldProjectPath).exists())) {
       logger.severe('Could not create $previewScaffoldProjectPath!');
@@ -105,7 +109,6 @@ class WidgetPreviewEnvironment {
     logger.info('Preview scaffold initialization complete!');
   }
 
-
   Future<void> _initialBuild() async {
     await runInDirectoryScope(
       path: previewScaffoldProjectPath,
@@ -118,8 +121,11 @@ class WidgetPreviewEnvironment {
           '--device-id=${PlatformUtils.getDeviceIdForPlatform()}',
           '--debug',
         ];
-        // TODO(bkonyi): check exit code.
-        await Process.run('flutter', args);
+        checkExitCode(
+          description: 'Initial build',
+          failureMessage: 'Failed to generate prebuilt preview scaffold!',
+          result: await Process.run('flutter', args),
+        );
       },
     );
   }
