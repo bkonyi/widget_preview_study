@@ -23,7 +23,11 @@ import 'utils.dart';
 /// Clears preview scaffolding state on each run.
 ///
 /// Set to false for release.
-const developmentMode = false;
+const developmentMode = true;
+
+const shouldUsePrebuiltBinaryVar = 'NO_USE_PREBUILT_BINARY';
+const shouldUsePrebuiltBinary =
+    !const bool.fromEnvironment(shouldUsePrebuiltBinaryVar);
 
 final logger = Logger.root;
 
@@ -103,8 +107,14 @@ class WidgetPreviewEnvironment {
 
     await _populatePreviewsInScaffold(const <String, List<String>>{});
 
-    logger.info('Performing initial build...');
-    await _initialBuild();
+    if (shouldUsePrebuiltBinary) {
+      logger.info('Performing initial build...');
+      await _initialBuild();
+    } else {
+      logger.warning(
+        'Skipping build of prebuilt binary as $shouldUsePrebuiltBinaryVar is defined',
+      );
+    }
 
     logger.info('Preview scaffold initialization complete!');
   }
@@ -228,7 +238,8 @@ class WidgetPreviewEnvironment {
           'run',
           '--machine',
           // ignore: lines_longer_than_80_chars
-          '--use-application-binary=${PlatformUtils.prebuiltApplicationBinaryPath}',
+          if (shouldUsePrebuiltBinary)
+            '--use-application-binary=${PlatformUtils.prebuiltApplicationBinaryPath}',
           '--device-id=${PlatformUtils.getDeviceIdForPlatform()}',
           '--vmservice-out-file=$_vmServiceInfoPath',
         ];
