@@ -15,6 +15,7 @@ import 'generated_preview.dart';
 class PreviewAssetBundle extends PlatformAssetBundle {
   @override
   Future<ByteData> load(String key) {
+    return super.load(key);
     // These assets are always present.
     if (key == 'AssetManifest.bin' ||
         key == 'AssetManifest.json' ||
@@ -28,6 +29,7 @@ class PreviewAssetBundle extends PlatformAssetBundle {
 
   @override
   Future<ImmutableBuffer> loadBuffer(String key) async {
+    return super.loadBuffer(key);
     return await ImmutableBuffer.fromAsset('../../$key');
   }
 }

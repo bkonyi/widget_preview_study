@@ -35,6 +35,12 @@ ProcessResult checkExitCode({
 }
 
 abstract class PlatformUtils {
+  static String get flutter {
+    assert(Platform.isLinux || Platform.isMacOS || Platform.isWindows);
+    if (Platform.isWindows) return 'flutter.bat';
+    return 'flutter';
+  }
+
   static String get prebuiltApplicationBinaryPath {
     assert(Platform.isLinux || Platform.isMacOS || Platform.isWindows);
     String path;
@@ -44,8 +50,7 @@ abstract class PlatformUtils {
       // TODO(bkonyi): find path for debug binaries on Linux.
       throw UnimplementedError();
     } else if (Platform.isWindows) {
-      // TODO(bkonyi): find path for debug binaries on Windows.
-      throw UnimplementedError();
+      path = 'build/windows/x64/runner/Debug/preview_scaffold.exe';
     } else {
       throw StateError('Unknown OS');
     }

@@ -53,9 +53,32 @@ class PubspecProcessor {
         .value
         .cast<String>()
         // Reference the assets from the parent project.
-        .map((e) => '../../$e')
+        .map((e) => '${e.replaceAll('\\', '/')}')
         .toList();
+    print(Directory.current);
+    for (final asset in assets) {
+      final dir =
+          Directory(path.dirname(path.join(previewScaffoldProjectPath, asset)));
+      if (!dir.existsSync()) {
+        dir.createSync(recursive: true);
+      }
+      File('${projectRoot.path}/$asset')
+          .copySync(path.join(previewScaffoldProjectPath, asset));
+    }
     final fontsYaml = (flutterYaml[_kFonts] as YamlList).value.cast<YamlMap>();
+    for (final family in fontsYaml) {
+      for (final font in family[_kFonts] as YamlList) {
+          final asset = font[_kAsset] as String;
+          final dir = Directory(
+              path.dirname(path.join(previewScaffoldProjectPath, asset)));
+          if (!dir.existsSync()) {
+            dir.createSync(recursive: true);
+          }
+          File('${projectRoot.path}/$asset')
+              .copySync(path.join(previewScaffoldProjectPath, asset));
+      }
+    }
+
     final fonts = <Map<String, Object>>[
       for (final familyYaml in fontsYaml)
         <String, Object>{
@@ -64,7 +87,8 @@ class PubspecProcessor {
             for (final fontsYaml in familyYaml[_kFonts] as YamlList)
               <String, Object>{
                 // Reference the assets from the parent project.
-                _kAsset: '../../${(fontsYaml as YamlMap)[_kAsset]}',
+                _kAsset:
+                    '${(fontsYaml as YamlMap)[_kAsset].replaceAll('\\', '/')}',
                 if (fontsYaml.containsKey(_kFontWeight))
                   _kFontWeight: fontsYaml[_kFontWeight] as int,
                 if (fontsYaml.containsKey(_kFontStyle))
@@ -112,11 +136,15 @@ class PubspecProcessor {
       'dependency...',
     );
 
-    final widgetPreviewPath = path.dirname(
-      path.dirname(
-        Platform.script.toFilePath(),
-      ),
-    );
+    final widgetPreviewPath = path
+        .relative(
+          path.dirname(
+            path.dirname(
+              Platform.script.toFilePath(),
+            ),
+          ),
+        )
+        .replaceAll('\\', '/');
 
     final args = [
       'pub',
@@ -125,13 +153,13 @@ class PubspecProcessor {
       // TODO(bkonyi): add dependency on published package:widget_preview or
       // remove this if it's shipped with package:flutter
       'widget_preview:{"path":"$widgetPreviewPath"}',
-      '$projectName:{"path":"${projectRoot.path}"}',
+      '$projectName:{"path":"${path.relative(projectRoot.path).replaceAll('\\', '/')}"}',
     ];
 
     checkExitCode(
       description: 'Adding pub dependencies',
       failureMessage: 'Failed to add dependencies to pubspec.yaml!',
-      result: await Process.run('flutter', args),
+      result: await Process.run(PlatformUtils.flutter, args),
     );
   }
 }

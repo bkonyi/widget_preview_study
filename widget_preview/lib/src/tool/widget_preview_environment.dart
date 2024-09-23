@@ -40,6 +40,7 @@ class WidgetPreviewEnvironment {
   StreamSubscription<WatchEvent>? _fileWatcher;
 
   Future<void> start(Directory projectRoot) async {
+    print(Platform.environment);
     _pubspecProcessor = PubspecProcessor(projectRoot: projectRoot);
     // TODO(bkonyi): consider parallelizing initializing the scaffolding
     // project and finding the previews.
@@ -73,7 +74,7 @@ class WidgetPreviewEnvironment {
       description: 'Creating $previewScaffoldProjectPath',
       failureMessage:
           'Failed to create preview scaffold at $previewScaffoldProjectPath',
-      result: await Process.run('flutter', [
+      result: await Process.run(PlatformUtils.flutter, [
         'create',
         '--platforms=windows,linux,macos',
         '.dart_tool/preview_scaffold',
@@ -134,7 +135,7 @@ class WidgetPreviewEnvironment {
         checkExitCode(
           description: 'Initial build',
           failureMessage: 'Failed to generate prebuilt preview scaffold!',
-          result: await Process.run('flutter', args),
+          result: await Process.run(PlatformUtils.flutter, args),
         );
       },
     );
@@ -243,8 +244,8 @@ class WidgetPreviewEnvironment {
           '--device-id=${PlatformUtils.getDeviceIdForPlatform()}',
           '--vmservice-out-file=$_vmServiceInfoPath',
         ];
-        logger.info('Running "flutter $args"');
-        return await Process.start('flutter', args);
+        logger.info('Running "${PlatformUtils.flutter} $args"');
+        return await Process.start(PlatformUtils.flutter, args);
       },
     );
 
