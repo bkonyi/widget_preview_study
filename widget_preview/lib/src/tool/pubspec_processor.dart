@@ -55,7 +55,6 @@ class PubspecProcessor {
         // Reference the assets from the parent project.
         .map((e) => '${e.replaceAll('\\', '/')}')
         .toList();
-    print(Directory.current);
     for (final asset in assets) {
       final dir =
           Directory(path.dirname(path.join(previewScaffoldProjectPath, asset)));

@@ -40,7 +40,6 @@ class WidgetPreviewEnvironment {
   StreamSubscription<WatchEvent>? _fileWatcher;
 
   Future<void> start(Directory projectRoot) async {
-    print(Platform.environment);
     _pubspecProcessor = PubspecProcessor(projectRoot: projectRoot);
     // TODO(bkonyi): consider parallelizing initializing the scaffolding
     // project and finding the previews.
