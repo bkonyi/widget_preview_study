@@ -47,8 +47,7 @@ abstract class PlatformUtils {
     if (Platform.isMacOS) {
       path = 'build/macos/Build/Products/Debug/preview_scaffold.app';
     } else if (Platform.isLinux) {
-      // TODO(bkonyi): find path for debug binaries on Linux.
-      throw UnimplementedError();
+      path = 'build/linux/x64/debug/bundle/preview_scaffold';
     } else if (Platform.isWindows) {
       path = 'build/windows/x64/runner/Debug/preview_scaffold.exe';
     } else {
