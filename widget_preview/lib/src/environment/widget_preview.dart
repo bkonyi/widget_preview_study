@@ -24,15 +24,30 @@ class WidgetPreview extends StatefulWidget {
     this.platformBrightness,
   });
 
+  /// A description to be displayed alongside the preview.
   final String? name;
+
+  /// The [Widget] to be rendered in the preview.
   final Widget child;
+
+  /// Artificial constraints to be applied to the [child].
   final double? width;
   final double? height;
+
+  /// An optional device configuration.
   final DeviceInfo? device;
+
+  /// The orientation of [device].
   final Orientation? orientation;
+
+  /// Applies font scaling to text within the [child].
   final double? textScaleFactor;
+
+  /// Light and dark theme overrides.
   final ThemeData? theme;
   final ThemeData? darkTheme;
+
+  /// Light or dark mode (defaults to platform theme).
   final Brightness? platformBrightness;
 
   @override
