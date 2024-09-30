@@ -26,8 +26,8 @@ import 'utils.dart';
 const developmentMode = true;
 
 const shouldUsePrebuiltBinaryVar = 'NO_USE_PREBUILT_BINARY';
-const shouldUsePrebuiltBinary =
-    !const bool.fromEnvironment(shouldUsePrebuiltBinaryVar);
+const shouldUsePrebuiltBinary = false;
+    //!const bool.fromEnvironment(shouldUsePrebuiltBinaryVar);
 
 final logger = Logger.root;
 
